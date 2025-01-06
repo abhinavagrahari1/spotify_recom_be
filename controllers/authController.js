@@ -3,6 +3,7 @@ const axios = require('axios');
 
 const getSpotifyToken = (req, res) => {
     const accessToken = req.cookies.spotifyAccessToken;
+    console.log("Access Token:", accessToken);
     res.json({ accessToken });
 };
 
@@ -11,7 +12,7 @@ const spotifyCallback = async(req, res) => {
     const code = req.query.code;
     const clientId = process.env.SPOTIFY_CLIENT_ID;
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-    const redirectUri = `${process.env.BASE_URL}/auth/callback`; // Replace with your redirect URI
+    const redirectUri = `${process.env.BASE_URL_PROD_BE}/auth/callback`;
     console.log('code :>> ', code);
 
     try {
@@ -39,9 +40,10 @@ const spotifyCallback = async(req, res) => {
 
         console.log('userProfileResponse :>> ', userProfileResponse.data);
 
-        res.cookie('spotifyAccessToken', access_token, { httpOnly: true});
-        res.redirect(`${process.env.BASE_URL}/recommendations`);
+        res.cookie('spotifyAccessToken', access_token, { httpOnly: true, secure: true, sameSite: 'None'});
+        res.redirect(`${process.env.BASE_URL_PROD_FE}/recommendations`);
     } catch (error) {
+        console.log("error", error);
         res.status(500).json({ error: error.message });
     }
 };

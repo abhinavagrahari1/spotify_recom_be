@@ -1,5 +1,4 @@
 const axios = require('axios');
-const User = require('../models/user');
 const { getUserTopTracks } = require('../utils/spotify');
 const { Groq } = require('groq-sdk');
 
@@ -10,10 +9,11 @@ const groq = new Groq({
 // Recommendation logic
 const recommend = async (req, res) => {
     const spotifyAccessToken = req.get('Spotify-Access-Token');
+    console.log('spotifyAccessToken :>> ', spotifyAccessToken);
     try {
         const topTracks = await getUserTopTracks(spotifyAccessToken);
         
-        // console.log('topTracks :>> ', topTracks);
+        console.log('topTracks :>> ', topTracks);
         const trackNames = topTracks?.map(track => track.name).join(', ');
         console.log('trackNames :>> ', trackNames);
         const combinedPrompt = `Find 10 new songs based on the user's favorite tracks: ${trackNames}, return them as list of objects with artist and title as keys`;
